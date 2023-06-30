@@ -9,9 +9,7 @@ namespace Script
         [Header("当前食物值")] public int currentFood;
         [Header("每位玩家的食物消耗")] public int foodCostPerPlayer;
         [Header("玩家数量")] public int playerCount = 2;
-
-        [Header("玩家一属性")] public PlayerState playerOne;
-        [Header("玩家二属性")] public PlayerState playerTwo;
+        [Header("返回")] public GameObject menu;
 
         /// <summary>
         /// 是否允许在主界面进行任何交互
@@ -37,9 +35,7 @@ namespace Script
             {
                 Destroy(gameObject);
             }
-
-            playerOne.health = playerOne.maxHealth;
-            playerTwo.health = playerTwo.maxHealth;
+            DontDestroyOnLoad(gameObject);
         }
 
         public void ReduceFood()
@@ -71,39 +67,25 @@ namespace Script
 
             EventHandler.CallAfterPlayerHealthChange();
         }
-
-        /// <summary>
-        /// 两个玩家受伤
-        /// </summary>
-        public void ReducePlayerHealth()
-        {
-            ReducePlayerHealth(playerOne);
-            ReducePlayerHealth(playerTwo);
-        }
-
-        public void PlayerOneGiveHealth()
-        {
-            //玩家生命不足
-            if(playerOne.health <= 1) return;
-
-            playerOne.health -= 1;
-            EventHandler.CallAfterPlayerHealthChange();
-        }
-
-        public void PlayerTwoGiveHealth()
-        {
-            //玩家生命不足
-            if(playerTwo.health <= 1) return;
-
-            playerTwo.health -= 1;
-            EventHandler.CallAfterPlayerHealthChange();
-        }
-
+        
         private void PlayerCountCheck()
         {
             if (playerCount == 0)
             {
                 //TODO: GameOver
+            }
+        }
+
+        private void Update()
+        {
+            OpenMenuCanvas();
+        }
+
+        private void OpenMenuCanvas()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                menu.SetActive(!menu.activeSelf);
             }
         }
     }
