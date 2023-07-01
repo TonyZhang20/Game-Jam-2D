@@ -7,6 +7,7 @@ namespace Script.PlayerControl
     public class PlayerController : MonoBehaviour
     {
         public InputSignal inputSignal;
+        public Vector2 direction;
         [SerializeField, Range(0, 100f)] private float maxSpeed = 4f;
         [SerializeField, Range(0, 100f)] private float maxAcceleration = 35f;
         [SerializeField, Range(0, 100f)] private float maxAirAcceleration = 20f;
@@ -25,14 +26,15 @@ namespace Script.PlayerControl
         {
             _body = GetComponent<Rigidbody2D>();
             _ground = GetComponent<Ground>();
-            
+            direction = new Vector2(1, 1);
         }
 
        
 
         private void Update()
         {
-            ReceiveInputSignal();
+            if(GameManager.AbleToInput)
+                ReceiveInputSignal();
         }
 
         private void FixedUpdate()
@@ -52,13 +54,13 @@ namespace Script.PlayerControl
 
             if (Input.GetKey(inputSignal.leftSide))
             {
-                //moveLeft
                 _direction.x = -1;
+                direction = new Vector2(-1,1);
             }
             if (Input.GetKey(inputSignal.rightSide))
             {
-                //moveRight
                 _direction.x = 1;
+                direction = new Vector2(1,1);
             }
 
             if (Input.GetKey(inputSignal.leftSide) && Input.GetKey(inputSignal.rightSide))
@@ -69,16 +71,8 @@ namespace Script.PlayerControl
             {
                 _direction.x = 0;
             }
-
-
-
-
-            _desiredVelocity = new Vector2(_direction.x, 0f) * Mathf.Max(maxSpeed - _ground.GetFriction(),0); 
             
-            if (Input.GetKeyDown(inputSignal.jump))
-            {
-                //跳
-            }
+            _desiredVelocity = new Vector2(_direction.x, 0f) * Mathf.Max(maxSpeed - _ground.GetFriction(),0);
         }
     }
     [System.Serializable]
@@ -87,5 +81,7 @@ namespace Script.PlayerControl
         [Header("左")] public KeyCode leftSide;
         [Header("右")] public KeyCode rightSide;
         [Header("跳")] public KeyCode jump;
+        [Header("射击")] public KeyCode fire;
+        [Header("冲刺")] public KeyCode dash;
     }
 }

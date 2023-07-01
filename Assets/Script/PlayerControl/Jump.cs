@@ -20,6 +20,9 @@ namespace Script.PlayerControl
 
         private bool _desiredJump;
         private bool _onGround;
+
+        private bool _ableToJump = true;
+        private float _jumpCoolDown = 0.15f;
         
         private void Start()
         {
@@ -32,12 +35,22 @@ namespace Script.PlayerControl
 
         private void Update()
         {
-            _desiredJump = Input.GetKeyDown(_playerController.inputSignal.jump);
-            
+            if (GameManager.AbleToInput )
+                _desiredJump = Input.GetKeyDown(_playerController.inputSignal.jump);
             _onGround = _ground.GetOnGround();
             _velocity = _body.velocity;
-            if (_onGround) _jumpPhase = 0;
-            if (_desiredJump) JumpAction();
+            if (_onGround)
+            {
+                _jumpPhase = 0;
+                _maxSpeed = 0;
+            }
+
+            if (_desiredJump && _ableToJump)
+            {
+                JumpAction();
+                _ableToJump = false;
+                Invoke(nameof(JumpCoolDown),_jumpCoolDown);
+            }
 
             if (_body.velocity.y > 0)
                 _body.gravityScale = upwardMovementMultiplier;
@@ -49,11 +62,13 @@ namespace Script.PlayerControl
             _body.velocity = _velocity;
         }
 
-        private void FixedUpdate()
+        private void JumpCoolDown()
         {
-
+            _ableToJump = true;
         }
 
+        
+        private float _maxSpeed = 0;
         private void JumpAction()
         {
             if (_onGround || _jumpPhase < maxAirJumps)
@@ -64,7 +79,15 @@ namespace Script.PlayerControl
                 {
                     jumpSpeed = Mathf.Max(jumpSpeed - _velocity.y, 0);
                 }
-                _velocity.y += jumpSpeed;
+                if (_maxSpeed < jumpSpeed) _maxSpeed = jumpSpeed;
+                if (_velocity.y > 0)
+                {
+                    _velocity.y += _maxSpeed;
+                }
+                else
+                {
+                    _velocity.y = _maxSpeed;
+                }
             }
         }
     }

@@ -14,7 +14,7 @@ namespace Script
         /// <summary>
         /// 是否允许在主界面进行任何交互
         /// </summary>
-        public static bool AbleToInput { get; }
+        public static bool AbleToInput { get; set; }
 
         public static GameManager Instance => _instance;
         private static GameManager _instance;
@@ -23,6 +23,7 @@ namespace Script
         private void Awake()
         {
             InitAndSingleton();
+            AbleToInput = true;
         }
 
         private void InitAndSingleton()
