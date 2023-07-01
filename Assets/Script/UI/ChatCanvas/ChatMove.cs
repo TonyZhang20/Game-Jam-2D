@@ -8,7 +8,7 @@ namespace Script.UI.ChatCanvas
     {
         public Vector2 moveRandomRange = new Vector2(160, 240);
         public float moveSpeed = 180f;
-        public float aliveTime = 12f;
+        public float aliveTime = 8f;
 
         private void OnEnable()
         {

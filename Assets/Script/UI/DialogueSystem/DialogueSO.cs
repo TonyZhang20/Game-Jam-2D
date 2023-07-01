@@ -8,5 +8,10 @@ namespace Script.UI.DialogueSystem
     {
         [TextArea]
         public List<string> dialogueList;
+
+        public string GetRandomDialogue()
+        {
+            return dialogueList[Random.Range(0, dialogueList.Count)];
+        }
     }
 }

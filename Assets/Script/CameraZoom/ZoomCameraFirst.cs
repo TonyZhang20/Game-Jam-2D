@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Cinemachine;
 using DG.Tweening;
+using Script.PlayerControl;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Script.CameraZoom
@@ -14,11 +17,12 @@ namespace Script.CameraZoom
         public float zoomTime;
         public CinemachineVirtualCamera mCamera;
         
-
         private void ZoomIn()
         {
             side.transform.DOScale(originZoom, zoomTime);
             StartCoroutine(ChangeCameraZoom());
+
+            GetComponent<PlayerController>().transform.SetParent(transform);
         }
 
         private IEnumerator ChangeCameraZoom()

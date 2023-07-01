@@ -16,6 +16,8 @@ namespace Script.UI.DialogueSystem
         [SerializeField, Range(0, 5), Header("每句话结束后等待时间")]
         public float spaceBetweenSentence = 2f;
 
+     
+
         private bool _duringDialogue;
         
         private void Awake()
@@ -31,6 +33,7 @@ namespace Script.UI.DialogueSystem
             else Destroy(gameObject);
         }
 
+        
         public void CallDialogue(DialogueSO dialogueSo)
         {
             StartCoroutine(DoDialogue(dialogueSo));

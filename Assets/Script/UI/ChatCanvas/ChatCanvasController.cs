@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Script.UI.DialogueSystem;
 using UnityEngine;
 using TMPro;
 using Random = UnityEngine.Random;
@@ -13,9 +14,19 @@ namespace Script.UI.ChatCanvas
         private static ChatCanvasController _instance;
         public List<RectTransform> initPosition;
         public GameObject tempText;
+        
+        [Header("弹幕同频最大数量")] public int chatMaxNum = 3;
+        [SerializeField] public DialogueSO dialogueSo;
+
+        private Coroutine _chatCoroutine;
         private void Awake()
         {
             Singleton();
+        }
+        
+        private void Start()
+        {
+            ShowChat(dialogueSo);
         }
 
         private void Singleton()
@@ -23,12 +34,7 @@ namespace Script.UI.ChatCanvas
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
         }
-
-        private void Start()
-        {
-            StartCoroutine(WorkChat());
-        }
-
+        
         private IEnumerator WorkChat()
         {
             yield return new WaitForSeconds(2f);
@@ -44,6 +50,31 @@ namespace Script.UI.ChatCanvas
             int index = Random.Range(0, initPosition.Count);
             return initPosition[index];
         }
+
+        public void ShowChat(DialogueSO dialogueSo)
+        {
+            if (_chatCoroutine != null)
+            {
+                StopCoroutine(_chatCoroutine);
+                _chatCoroutine = null;
+            }
+            _chatCoroutine = StartCoroutine(PlayChat(dialogueSo));
+        }
+
+        private IEnumerator PlayChat(DialogueSO dialogueSo)
+        {
+            while (FindObjectsOfType<ChatMove>().Length < chatMaxNum)
+            {
+                ShowChat(dialogueSo.GetRandomDialogue());
+                yield return new WaitForSeconds(1.8f);
+            }
+
+            yield return new WaitForSeconds(0.2f);
+            
+            _chatCoroutine = null;
+            ShowChat(dialogueSo);
+        }
+        
 
         /// <summary>
         /// 用模板字体样式生成弹幕
