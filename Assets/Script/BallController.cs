@@ -30,6 +30,12 @@ namespace Script
                 velocity = new Vector2(velocity.x, upwardForce * velocity.y);
                 ballRigidbody.velocity = velocity;
             }
+
+            if (collision.transform.CompareTag("Enemy"))
+            {
+                collision.transform.GetComponent<Enemy>().GetHit();
+                Destroy(gameObject);
+            }
         }
     }
 }

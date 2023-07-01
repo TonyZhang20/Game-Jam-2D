@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace Script.PlayerControl
@@ -12,6 +13,9 @@ namespace Script.PlayerControl
         [SerializeField, Range(0, 100f)] private float maxAcceleration = 35f;
         [SerializeField, Range(0, 100f)] private float maxAirAcceleration = 20f;
 
+        public int currentHealth = 3;
+        public int maxHealth = 3;
+
         private Vector2 _direction;
         private Vector2 _desiredVelocity;
         private Vector2 _velocity;
@@ -21,7 +25,9 @@ namespace Script.PlayerControl
         private float _maxSpeedChange;
         private float _acceleration;
         private bool _onGround;
-        
+
+        private Vector3 _lastFromPosition;
+        [SerializeField] private LayerMask layerMask;
         private void Start()
         {
             _body = GetComponent<Rigidbody2D>();
@@ -29,12 +35,23 @@ namespace Script.PlayerControl
             direction = new Vector2(1, 1);
         }
 
-       
-
         private void Update()
         {
             if(GameManager.AbleToInput)
                 ReceiveInputSignal();
+
+            if (Physics2D.Raycast(transform.position, Vector2.down, 3f, layerMask) &&
+                !Physics2D.Raycast(transform.position, Vector2.right, 0.8f, layerMask) &&
+                !Physics2D.Raycast(transform.position, Vector2.left, 0.8f, layerMask)
+                )
+            {
+                _lastFromPosition = transform.position;
+            }
+
+            if (transform.position.y <= -9)
+            {
+                Respawn();
+            }
         }
 
         private void FixedUpdate()
@@ -73,6 +90,26 @@ namespace Script.PlayerControl
             }
             
             _desiredVelocity = new Vector2(_direction.x, 0f) * Mathf.Max(maxSpeed - _ground.GetFriction(),0);
+        }
+
+        private void Respawn()
+        {
+            transform.position = _lastFromPosition;
+            currentHealth -= 1;
+
+            if (currentHealth <= 0)
+            {
+                SceneManager.LoadScene(0);
+            }
+        }
+
+        public void GetHit()
+        {
+            currentHealth -= 1;
+            if (currentHealth <= 0)
+            {
+                SceneManager.LoadScene(0);
+            }
         }
     }
     [System.Serializable]

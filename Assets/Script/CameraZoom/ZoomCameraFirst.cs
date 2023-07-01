@@ -21,8 +21,6 @@ namespace Script.CameraZoom
         {
             side.transform.DOScale(originZoom, zoomTime);
             StartCoroutine(ChangeCameraZoom());
-
-            GetComponent<PlayerController>().transform.SetParent(transform);
         }
 
         private IEnumerator ChangeCameraZoom()
