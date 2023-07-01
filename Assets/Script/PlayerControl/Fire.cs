@@ -33,6 +33,7 @@ namespace Script.PlayerControl
             body.velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x,0);
             body.AddForce(force * direction);
             _ableFire = false;
+            GetComponent<Animator>().SetTrigger("Attack");
             Invoke(nameof(AbleToFire),cooldown);
         }
 

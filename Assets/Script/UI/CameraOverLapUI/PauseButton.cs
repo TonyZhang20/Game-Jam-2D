@@ -10,15 +10,17 @@ namespace Script.UI.CameraOverLapUI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (Time.timeScale == 1)
+            if (Mathf.Approximately(Time.timeScale, 1))
             {
                 Time.timeScale = 0;
-                pauseButton.color = new Color(pauseButton.color.r, pauseButton.color.g, pauseButton.color.b, 0);
+                pauseButton.color = new Color(pauseButton.color.r, pauseButton.color.g, pauseButton.color.b, 1);
+                GameManager.AbleToInput = false;
             }
             else
             {
                 Time.timeScale = 1;
-                pauseButton.color = new Color(pauseButton.color.r, pauseButton.color.g, pauseButton.color.b, 1);
+                pauseButton.color = new Color(pauseButton.color.r, pauseButton.color.g, pauseButton.color.b, 0);
+                GameManager.AbleToInput = true;
             }
         }
     }

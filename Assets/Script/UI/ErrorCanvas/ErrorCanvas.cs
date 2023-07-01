@@ -13,6 +13,14 @@ namespace Script.UI.ErrorCanvas
         private void OnEnable()
         {
             ShowError();
+            Time.timeScale = 0;
+            GameManager.AbleToInput = false;
+        }
+
+        private void OnDisable()
+        {
+            Time.timeScale = 1;
+            GameManager.AbleToInput = true;
         }
 
         public void ShowError()

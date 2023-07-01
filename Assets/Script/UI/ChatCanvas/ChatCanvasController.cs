@@ -13,6 +13,7 @@ namespace Script.UI.ChatCanvas
         public static ChatCanvasController Instance => _instance;
         private static ChatCanvasController _instance;
         public List<RectTransform> initPosition;
+        public List<Color> colors;
         public GameObject tempText;
         
         [Header("弹幕同频最大数量")] public int chatMaxNum = 3;
@@ -87,6 +88,8 @@ namespace Script.UI.ChatCanvas
             game.transform.position = rect.position;
             
             game.GetComponent<TextMeshProUGUI>().text = content;
+            game.GetComponent<TextMeshProUGUI>().fontSize = Random.Range(50, 72);
+            game.GetComponent<TextMeshProUGUI>().color = colors[Random.Range(0, colors.Count)];
             game.AddComponent<ChatMove>();
         }
 

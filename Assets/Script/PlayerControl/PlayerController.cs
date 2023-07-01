@@ -1,4 +1,5 @@
 using System;
+using Script.UI.HealthBarController;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,12 +27,15 @@ namespace Script.PlayerControl
         private float _acceleration;
         private bool _onGround;
 
+        private SpriteRenderer _spriteRenderer;
+
         private Vector3 _lastFromPosition;
         [SerializeField] private LayerMask layerMask;
         private void Start()
         {
             _body = GetComponent<Rigidbody2D>();
             _ground = GetComponent<Ground>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
             direction = new Vector2(1, 1);
         }
 
@@ -48,7 +52,7 @@ namespace Script.PlayerControl
                 _lastFromPosition = transform.position;
             }
 
-            if (transform.position.y <= -9)
+            if (transform.position.y <= -12)
             {
                 Respawn();
             }
@@ -73,11 +77,14 @@ namespace Script.PlayerControl
             {
                 _direction.x = -1;
                 direction = new Vector2(-1,1);
+                _spriteRenderer.flipX = false;
+                
             }
             if (Input.GetKey(inputSignal.rightSide))
             {
                 _direction.x = 1;
-                direction = new Vector2(1,1);
+                direction = new Vector2(1, 1);
+                _spriteRenderer.flipX = true;
             }
 
             if (Input.GetKey(inputSignal.leftSide) && Input.GetKey(inputSignal.rightSide))
@@ -96,6 +103,8 @@ namespace Script.PlayerControl
         {
             transform.position = _lastFromPosition;
             currentHealth -= 1;
+            
+            FindObjectOfType<HealthBar>().UpDateHealthBar(currentHealth);
 
             if (currentHealth <= 0)
             {
@@ -106,6 +115,9 @@ namespace Script.PlayerControl
         public void GetHit()
         {
             currentHealth -= 1;
+            
+            FindObjectOfType<HealthBar>().UpDateHealthBar(currentHealth);
+            
             if (currentHealth <= 0)
             {
                 SceneManager.LoadScene(0);
